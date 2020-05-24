@@ -1,0 +1,5 @@
+---
+
+## description: enable alertmanager
+## type: bool
+prometheus_alertmanager: true

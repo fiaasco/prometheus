@@ -1,0 +1,31 @@
+---
+- name: install prometheus server
+  apt:
+    name: prometheus
+    state: present
+
+- name: create config directories
+  file:
+    dest: "/etc/prometheus/{{ item }}"
+    state: directory
+  with_items:
+    - "config/nodes"
+    - "config/rules"
+    - "config/applications"
+    - "config/infrastructure"
+
+- name: configure prometheus
+  template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+  notify: restart prometheus
+
+- name: ensure service is started
+  service:
+    name: prometheus
+    state: started
+    enabled: true
+
+- name: configure alertmanager if required
+  include_tasks: alertmanager.yml
+  when: prometheus_alertmanager

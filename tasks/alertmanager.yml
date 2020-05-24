@@ -1,0 +1,17 @@
+---
+- name: install alertmanager
+  apt:
+    name: prometheus-alertmanager
+    state: present
+
+- name: configure prometheus
+  template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+  notify: restart prometheus
+
+- name: ensure service is started
+  service:
+    name: prometheus-alertmanager
+    state: started
+    enabled: true
